@@ -45,7 +45,7 @@ export function TeamMemberCard({
   };
 
   const isOnline = member.active;
-  const isIT = member.department_id === 1 && (member.role === 'Admin' || member.role === 'Agent' || member.role === 'admin' || member.role === 'agente');
+  const isIT = member.department_id === 1 && (member.role === 'Admin' || member.role === 'Agent');
 
   return (
     <Card className="border-none shadow-premium hover:shadow-xl transition-all group overflow-hidden bg-white">
@@ -120,15 +120,15 @@ export function TeamMemberCard({
                   className="bg-neutral-50 border border-neutral-200 rounded-md py-1 px-2 text-[9px] font-black uppercase outline-none focus:border-primary"
                   value={member.role || "Staff"}
                   disabled={updatingId === member.id}
-                  onChange={(e) => onUpdateUser(member.id, { role: e.target.value })}
+                  onChange={(e) => onUpdateUser(member.id, { role: e.target.value as any })}
                 >
-                  <option value="Staff">Staff (Usuario Regular)</option>
-                  <option value="Agent">Agent (Técnico Soporte)</option>
-                  <option value="Admin">Admin (Administrador)</option>
+                  <option value="Staff">Personal (Usuario Regular)</option>
+                  <option value="Agent">Agente (Técnico Soporte)</option>
+                  <option value="Admin">Administrador</option>
                 </select>
               ) : (
                 <Badge variant="outline" className="rounded-lg text-[9px] font-black border-neutral-100 bg-neutral-50/50">
-                  {member.role}
+                  {member.role === 'Admin' ? 'Administrador' : member.role === 'Agent' ? 'Agente' : 'Personal'}
                 </Badge>
               )}
               {isIT && (
@@ -185,7 +185,7 @@ export function TeamMemberCard({
                 <Mail size={14} /> {member.email}
               </a>
             )}
-            {!isEditing && <span className="text-[10px] font-bold text-neutral-200 uppercase tracking-widest">UID: {member.id}</span>}
+            {!isEditing && <span className="text-[10px] font-bold text-neutral-200 uppercase tracking-widest">ID: {member.id}</span>}
           </div>
           
           {isAdmin && type === "staff" && (

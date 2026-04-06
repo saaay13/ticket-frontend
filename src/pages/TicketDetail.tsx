@@ -57,7 +57,7 @@ export function TicketDetail() {
   const handleStatusChange = async (newStatus: string) => {
     if (!ticket || !id) return;
     try {
-      const success = await updateTicketField({ status: newStatus.toLowerCase().replace(' ', '_') as any });
+      const success = await updateTicketField({ status: newStatus as any });
       if (success) {
         setCurrentStatus(newStatus);
       }
@@ -72,7 +72,7 @@ export function TicketDetail() {
   };
 
   const handleEscalate = async () => {
-    await updateTicketField({ priority: "Critical" as any });
+    await updateTicketField({ priority: "Crítica" as any });
     await addComment("Ticket escalado a Senior (Prioridad Crítica).");
   };
 

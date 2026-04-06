@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import {
   ArrowLeft, Clock, User, Tag, Building,
-  Calendar, MessageSquare, Send, Paperclip,
+  Calendar, MessageSquare, Send,
   Edit2, CheckCircle, AlertCircle, ChevronDown,
   Trash2,
 } from "lucide-react";
 import { Badge, Button } from "@/components/atoms";
 import { Card, CardContent, CardHeader, CardTitle, Avatar, AvatarFallback } from "@/components/molecules";
-import { getStatusColor, getPriorityColor } from "@/data/ticketData";
+import {
+  getStatusColor,
+  getPriorityColor,
+  getPriorityLabel,
+  getStatusLabel,
+  getCategoryLabel
+} from "@/data/ticketData";
 import { cn } from "@/lib/Utils";
 
-const STATUS_OPTIONS = ["Open", "In Progress", "Pending", "Resolved", "Closed"];
+const STATUS_OPTIONS = ["Abierto", "En Progreso", "Pendiente", "Resuelto", "Cerrado"];
 
 // --- 1. TICKET HEADER ---
 export function TicketHeader({
@@ -32,8 +38,7 @@ export function TicketHeader({
           <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md">
             #{ticket.id}
           </span>
-          <div className="h-4 w-px bg-neutral-200 mx-1" />
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{ticket.category}</span>
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{getCategoryLabel(ticket.category)}</span>
         </div>
         <h1 className="text-3xl font-black text-neutral-900 tracking-tight">{ticket.title}</h1>
       </div>
@@ -50,7 +55,7 @@ export function TicketHeader({
             style={{ backgroundColor: sc.bg, color: sc.text }}
           >
             <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: sc.dot }} />
-            {currentStatus.replace('_', ' ')}
+            {getStatusLabel(currentStatus)}
             {isIT && <ChevronDown size={14} className={cn("transition-transform duration-200", statusDropdown && "rotate-180")} />}
           </button>
 
@@ -59,7 +64,7 @@ export function TicketHeader({
               <div className="px-4 py-2 border-b border-neutral-50 mb-1">
                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Cambiar Estado</span>
               </div>
-              {['Open', 'In Progress', 'Pending', 'Resolved', 'Closed', ...(isAdmin ? ['Deleted'] : [])].map((status) => {
+              {['Abierto', 'En Progreso', 'Pendiente', 'Resuelto', 'Cerrado', ...(isAdmin ? ['Eliminado'] : [])].map((status) => {
                 const scOption = getStatusColor(status as any);
                 return (
                   <button
@@ -69,7 +74,7 @@ export function TicketHeader({
                   >
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: scOption.bg !== 'var(--neutral-100)' ? scOption.bg : scOption.text }} />
-                      <span className="text-neutral-700">{status}</span>
+                      <span className="text-neutral-700">{getStatusLabel(status)}</span>
                     </div>
                     {currentStatus === status && <CheckCircle size={14} className="text-primary" />}
                   </button>
@@ -100,10 +105,10 @@ export function TicketThread({ comments, onAddComment, updating }: any) {
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}m`;
+    if (mins < 60) return `${mins} min`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h`;
-    return `${Math.floor(hours / 24)}d`;
+    if (hours < 24) return `${hours} h`;
+    return `${Math.floor(hours / 24)} d`;
   };
 
   const handleSend = async () => {
@@ -141,9 +146,7 @@ export function TicketThread({ comments, onAddComment, updating }: any) {
                 className="w-full px-4 py-3 text-sm font-medium rounded-2xl border border-neutral-200 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none resize-none bg-white"
               />
               <div className="flex items-center justify-between">
-                <button className="flex items-center gap-2 text-xs font-bold text-neutral-400 hover:text-primary transition-colors">
-                  <Paperclip size={14} /> Adjuntar archivo
-                </button>
+                <div />
                 <Button
                   onClick={handleSend}
                   disabled={!newComment.trim() || updating}
@@ -167,21 +170,21 @@ export function TicketThread({ comments, onAddComment, updating }: any) {
         ) : (
           comments.map((comment: any) => (
             <div key={comment.id} className="flex gap-4 group">
-            <Avatar 
-              className={cn(
-                "size-10 rounded-2xl shadow-sm flex-shrink-0 transition-transform group-hover:scale-110",
-                comment.author === "Me" ? "ring-2 ring-primary/10" : "ring-2 ring-neutral-100"
-              )}
-            >
-              <AvatarFallback 
+              <Avatar
                 className={cn(
-                  "rounded-2xl text-xs font-black text-white",
-                  comment.author === "Me" ? "bg-primary" : "bg-neutral-400"
+                  "size-10 rounded-2xl shadow-sm flex-shrink-0 transition-transform group-hover:scale-110",
+                  comment.author === "Me" ? "ring-2 ring-primary/10" : "ring-2 ring-neutral-100"
                 )}
               >
-                {comment.avatar}
-              </AvatarFallback>
-            </Avatar>
+                <AvatarFallback
+                  className={cn(
+                    "rounded-2xl text-xs font-black text-white",
+                    comment.author === "Me" ? "bg-primary" : "bg-neutral-400"
+                  )}
+                >
+                  {comment.avatar}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 bg-white p-5 rounded-2xl shadow-sm border border-neutral-100 group-hover:shadow-md transition-all">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-black text-neutral-800">
@@ -220,7 +223,7 @@ export function TicketMetadataSidebar({
     { icon: User, label: "Solicitante", value: ticket.requester, color: "text-blue-500", key: 'req' },
     { icon: User, label: "Asignado a", value: ticket.assignee, color: "text-orange-500", isAssignee: true, key: 'assign' },
     { icon: Building, label: "Departamento", value: ticket.department, color: "text-purple-500", key: 'dept' },
-    { icon: Tag, label: "Prioridad", value: ticket.priority, color: "text-error", isBadge: true, badgeVariant: ticket.priority === 'Critical' ? 'destructive' : ticket.priority === 'High' ? 'warning' : ticket.priority === 'Low' ? 'success' : 'secondary', key: 'prior' },
+    { icon: Tag, label: "Prioridad", value: getPriorityLabel(ticket.priority), color: "text-error", isBadge: true, badgeVariant: ticket.priority === 'Crítica' ? 'destructive' : ticket.priority === 'Alta' ? 'warning' : ticket.priority === 'Baja' ? 'success' : 'secondary', key: 'prior' },
     { icon: Calendar, label: "Creado el", value: new Date(ticket.createdAt).toLocaleDateString() + " " + new Date(ticket.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), color: "text-neutral-500", key: 'cal' },
   ];
 
@@ -285,15 +288,15 @@ export function TicketMetadataSidebar({
               variant="secondary"
               className="w-full justify-start font-bold py-5 text-xs bg-white/10 hover:bg-white/20 border-none"
               onClick={onEscalate}
-              disabled={updating || ticket.status === 'Closed' || ticket.status === 'closed'}
+              disabled={updating || ticket.status === 'Cerrado' || ticket.status === 'Eliminado'}
             >
               Escalar a Senior
             </Button>
             <Button
               variant="outline"
               className="w-full justify-start font-bold py-5 text-xs border-primary/20 text-primary hover:bg-primary/5"
-              onClick={() => onUpdateField({ status: 'closed' })}
-              disabled={updating || ticket.status === 'Closed' || ticket.status === 'closed' || ticket.status === 'Deleted' || ticket.status === 'deleted'}
+              onClick={() => onUpdateField({ status: 'Cerrado' })}
+              disabled={updating || ticket.status === 'Cerrado' || ticket.status === 'Eliminado'}
             >
               <CheckCircle size={14} className="mr-2" /> Finalizar / Cerrar Ticket
             </Button>

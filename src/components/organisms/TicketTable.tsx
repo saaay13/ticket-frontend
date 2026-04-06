@@ -14,7 +14,10 @@ import {
   getStatusColor,
   getPriorityColor,
   TicketStatus,
-  TicketPriority
+  TicketPriority,
+  getStatusLabel,
+  getPriorityLabel,
+  getCategoryLabel
 } from "@/data/ticketData";
 import { cn } from "@/lib/Utils";
 import { Badge } from "@/components/atoms";
@@ -62,13 +65,13 @@ export const TicketTable: React.FC<TicketTableProps> = ({
           <thead>
             <tr className="border-b border-neutral-100 bg-neutral-50/50">
               {[
-                { label: "Ticket ID", key: "id" },
-                { label: "Title", key: "title" },
-                { label: "Priority", key: "priority" },
-                { label: "Status", key: "status" },
-                { label: "Category", key: null },
-                { label: "Assignee", key: null },
-                { label: "Created", key: "createdAt" },
+                { label: "ID del Ticket", key: "id" },
+                { label: "Título", key: "title" },
+                { label: "Prioridad", key: "priority" },
+                { label: "Estado", key: "status" },
+                { label: "Categoría", key: null },
+                { label: "Asignado a", key: null },
+                { label: "Creado", key: "createdAt" },
                 { label: "", key: null },
               ].map((col) => (
                 <th
@@ -92,7 +95,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
               <tr>
                 <td colSpan={8} className="text-center py-20 text-muted-foreground">
                   <Filter size={40} className="mx-auto mb-4 opacity-10" />
-                  <p className="text-sm font-medium">No tickets match your filters.</p>
+                  <p className="text-sm font-medium">No se encontraron incidencias con los filtros aplicados.</p>
                 </td>
               </tr>
             ) : (
@@ -119,7 +122,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
                       <HoverCard>
                         <HoverCardTrigger asChild>
                           <span className="text-[11px] mt-1 block text-muted-foreground font-bold hover:text-primary transition-colors cursor-help">
-                            {ticket.requester} · {ticket.category || 'No category'}
+                            {ticket.requester} · {getCategoryLabel(ticket.category)}
                           </span>
                         </HoverCardTrigger>
                         <HoverCardContent className="w-80 p-6 bg-white rounded-3xl border-none shadow-2xl animate-in fade-in zoom-in-95 duration-300">
@@ -153,23 +156,23 @@ export const TicketTable: React.FC<TicketTableProps> = ({
                     </td>
                     <td className="px-5 py-4 text-center">
                       <Badge
-                        variant={ticket.priority === 'Critical' ? 'destructive' : ticket.priority === 'High' ? 'warning' : ticket.priority === 'Low' ? 'success' : 'secondary'}
+                        variant={ticket.priority === 'Crítica' ? 'destructive' : ticket.priority === 'Alta' ? 'warning' : ticket.priority === 'Baja' ? 'success' : 'secondary'}
                         className="rounded-lg px-2.5 py-1 text-[11px] border-none font-bold"
                       >
-                        {ticket.priority}
+                        {getPriorityLabel(ticket.priority)}
                       </Badge>
                     </td>
                     <td className="px-5 py-4 text-center">
                       <Badge
-                        variant={ticket.status === 'Resolved' ? 'success' : ticket.status === 'In Progress' ? 'info' : ticket.status === 'Open' ? 'warning' : 'secondary'}
+                        variant={ticket.status === 'Resuelto' ? 'success' : ticket.status === 'En Progreso' ? 'info' : ticket.status === 'Abierto' ? 'warning' : 'secondary'}
                         className="rounded-lg px-2.5 py-1 text-[11px] border-none font-bold shadow-xs transition-transform group-hover:scale-105"
                       >
-                        {ticket.status}
+                        {getStatusLabel(ticket.status)}
                       </Badge>
                     </td>
                     <td className="px-5 py-4">
                       <span className="text-[11px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded-lg uppercase">
-                        {ticket.category || 'Other'}
+                        {getCategoryLabel(ticket.category)}
                       </span>
                     </td>
                     <td className="px-5 py-4">
@@ -177,13 +180,13 @@ export const TicketTable: React.FC<TicketTableProps> = ({
                         <div
                           className={cn(
                             "w-8 h-8 rounded-xl flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 shadow-sm transition-transform group-hover:rotate-6",
-                            ticket.assignee !== 'Unassigned' ? "bg-primary" : "bg-neutral-300"
+                            ticket.assignee !== 'Sin Asignar' ? "bg-primary" : "bg-neutral-300"
                           )}
                         >
                           {ticket.assigneeAvatar}
                         </div>
                         <span className="text-xs font-semibold text-neutral-700 whitespace-nowrap">
-                          {ticket.assignee}
+                          {ticket.assignee === 'Sin Asignar' ? 'Sin Asignar' : ticket.assignee}
                         </span>
                       </div>
                     </td>
@@ -210,7 +213,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
                               className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-neutral-600 hover:bg-primary/5 hover:text-primary transition-colors"
                               onClick={() => setOpenMenuId(null)}
                             >
-                              <Eye size={15} /> View Details
+                              <Eye size={15} /> Ver Detalles
                             </Link>
                             {isAdmin && (
                               <>
@@ -222,7 +225,7 @@ export const TicketTable: React.FC<TicketTableProps> = ({
                                     setOpenMenuId(null);
                                   }}
                                 >
-                                  <Trash2 size={15} /> Delete Ticket
+                                  <Trash2 size={15} /> Eliminar Ticket
                                 </button>
                               </>
                             )}

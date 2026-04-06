@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { CheckCircle, AlertCircle, Paperclip, X, Tag, User, MapPin, Calendar, Type } from "lucide-react";
+import { CheckCircle, AlertCircle, X, Tag, User, MapPin, Calendar, Type } from "lucide-react";
 import { useTicketForm } from "@/hooks/useTicketForm";
 import { Button, Input, Textarea } from "@/components/atoms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/molecules";
 import { cn } from "@/lib/Utils";
+import { getPriorityLabel } from "@/data/ticketData";
 
-const PRIORITIES = ["Critical", "High", "Medium", "Low"];
+const PRIORITIES = ["Crítica", "Alta", "Media", "Baja"];
 
 const priorityInfo: Record<string, { desc: string; color: string; bg: string; iconColor: string }> = {
-  Critical: { desc: "Impacto mayor, sistema caído", color: "text-error", bg: "bg-error/10", iconColor: "bg-error" },
-  High: { desc: "Funcionalidad principal afectada", color: "text-warning", bg: "bg-warning/10", iconColor: "bg-warning" },
-  Medium: { desc: "Funcionalidad parcial afectada", color: "text-primary", bg: "bg-primary/10", iconColor: "bg-primary" },
-  Low: { desc: "Problema menor, con alternativa", color: "text-success", bg: "bg-success/10", iconColor: "bg-success" },
+  Crítica: { desc: "Impacto mayor, sistema caído", color: "text-error", bg: "bg-error/10", iconColor: "bg-error" },
+  Alta: { desc: "Funcionalidad principal afectada", color: "text-warning", bg: "bg-warning/10", iconColor: "bg-warning" },
+  Media: { desc: "Funcionalidad parcial afectada", color: "text-primary", bg: "bg-primary/10", iconColor: "bg-primary" },
+  Baja: { desc: "Problema menor, con alternativa", color: "text-success", bg: "bg-success/10", iconColor: "bg-success" },
 };
 
 export interface CreateTicketFormProps {
@@ -100,44 +101,7 @@ export function CreateTicketForm({ onSuccess, onCancel }: CreateTicketFormProps)
               </div>
             </div>
 
-            {/* Attachments UI */}
-            <div className="pt-4">
-              <div
-                className="group border-2 border-dashed border-neutral-100 rounded-3xl p-8 text-center cursor-pointer hover:border-primary hover:bg-primary/[0.02] transition-all"
-                onClick={() => setAttachments([...attachments, `adjunto_${Date.now()}.png`])}
-              >
-                <div className="w-12 h-12 bg-neutral-50 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                  <Paperclip size={20} className="text-neutral-400 group-hover:text-primary" />
-                </div>
-                <p className="text-sm font-black text-neutral-700">Adjuntar archivos</p>
-                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mt-1">
-                  Capturas de pantalla o logs (Máx. 10MB)
-                </p>
-              </div>
 
-              {attachments.length > 0 && (
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {attachments.map((f, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-neutral-50 border border-neutral-100 animate-in slide-in-from-bottom-2 duration-300"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
-                        <Paperclip size={14} className="text-primary" />
-                      </div>
-                      <span className="flex-1 text-xs font-bold text-neutral-600 truncate">{f}</span>
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setAttachments(attachments.filter((_, j) => j !== i)); }}
-                        className="p-1 hover:bg-neutral-200 rounded-lg transition-colors text-neutral-400"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </CardContent>
         </Card>
 
@@ -256,12 +220,12 @@ export function CreateTicketForm({ onSuccess, onCancel }: CreateTicketFormProps)
                         "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl border transition-all text-left group",
                         isSelected ? "border-current shadow-md scale-[1.02]" : "border-neutral-100 bg-white hover:border-neutral-300"
                       )}
-                      style={{ color: isSelected ? `var(--priority-${p === 'Critical' ? 'urgent' : p.toLowerCase()})` : undefined }}
+                      style={{ color: isSelected ? `var(--priority-${p === 'Crítica' ? 'urgent' : p === 'Alta' ? 'high' : p === 'Media' ? 'medium' : 'low'})` : undefined }}
                     >
                       <div className={cn("w-3 h-3 rounded-full flex-shrink-0", info.iconColor)} />
                       <div className="flex-1">
                         <p className={cn("text-[10px] font-black uppercase tracking-widest", isSelected ? "text-current" : "text-neutral-700 group-hover:text-neutral-900")}>
-                          {p}
+                          {getPriorityLabel(p)}
                         </p>
                         <p className="text-[10px] font-bold text-neutral-400 line-clamp-1">{info.desc}</p>
                       </div>
@@ -289,7 +253,7 @@ export function CreateTicketForm({ onSuccess, onCancel }: CreateTicketFormProps)
                 className="w-full px-4 py-4 text-xs font-bold rounded-2xl border border-neutral-100 transition-all outline-none bg-neutral-50 focus:border-primary focus:bg-white"
               >
                 <option value="">Dejar sin asignar (Cola General)</option>
-                {users.filter(u => u.role !== 'requester').map((member: any) => (
+                {users.filter(u => u.role === 'Admin' || u.role === 'Agent').map((member: any) => (
                   <option key={member.id} value={member.id}>Asignar a: {member.first_name} {member.last_name}</option>
                 ))}
               </select>

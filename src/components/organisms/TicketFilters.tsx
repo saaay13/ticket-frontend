@@ -1,6 +1,13 @@
 import React from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { TicketStatus, TicketPriority, TicketCategory } from "@/data/ticketData";
+import { 
+  TicketStatus, 
+  TicketPriority, 
+  TicketCategory,
+  getStatusLabel,
+  getPriorityLabel,
+  getCategoryLabel
+} from "@/data/ticketData";
 
 interface TicketFiltersProps {
   search: string;
@@ -44,7 +51,7 @@ export const TicketFilters: React.FC<TicketFiltersProps> = ({
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#8A8A88" }} />
           <input
             type="text"
-            placeholder="Search by ID, title, or requester..."
+            placeholder="Buscar por ID, título o solicitante..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 transition"
@@ -61,7 +68,7 @@ export const TicketFilters: React.FC<TicketFiltersProps> = ({
           }}
         >
           <SlidersHorizontal size={15} />
-          Filters
+          Filtros
           {activeFilters > 0 && (
             <span
               className="w-5 h-5 rounded-full text-white text-xs flex items-center justify-center"
@@ -81,10 +88,10 @@ export const TicketFilters: React.FC<TicketFiltersProps> = ({
             className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none"
             style={{ color: statusFilter ? "#07590A" : "#8A8A88" }}
           >
-            <option value="">All Statuses</option>
+            <option value="">Todos los Estados</option>
             {statuses.map((s) => (
               <option key={s} value={s}>
-                {s.replace("_", " ")}
+                {getStatusLabel(s)}
               </option>
             ))}
           </select>
@@ -95,10 +102,10 @@ export const TicketFilters: React.FC<TicketFiltersProps> = ({
             className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none"
             style={{ color: priorityFilter ? "#07590A" : "#8A8A88" }}
           >
-            <option value="">All Priorities</option>
+            <option value="">Todas las Prioridades</option>
             {priorities.map((p) => (
               <option key={p} value={p}>
-                {p}
+                {getPriorityLabel(p)}
               </option>
             ))}
           </select>
@@ -109,10 +116,10 @@ export const TicketFilters: React.FC<TicketFiltersProps> = ({
             className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none"
             style={{ color: categoryFilter ? "#07590A" : "#8A8A88" }}
           >
-            <option value="">All Categories</option>
+            <option value="">Todas las Categorías</option>
             {categories.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {getCategoryLabel(c)}
               </option>
             ))}
           </select>
@@ -123,7 +130,7 @@ export const TicketFilters: React.FC<TicketFiltersProps> = ({
               className="flex items-center gap-1 text-sm px-3 py-1.5 rounded-lg transition"
               style={{ color: "#EF4444", backgroundColor: "#FEF2F2" }}
             >
-              <X size={13} /> Clear filters
+              <X size={13} /> Limpiar filtros
             </button>
           )}
         </div>

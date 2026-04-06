@@ -20,7 +20,7 @@ export const TicketPagination: React.FC<TicketPaginationProps> = ({
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 bg-white rounded-b-xl border-x border-b">
       <span className="text-xs" style={{ color: "#8A8A88" }}>
-        Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filteredCount)} of {filteredCount}
+        Mostrando {(page - 1) * perPage + 1}–{Math.min(page * perPage, filteredCount)} de {filteredCount}
       </span>
       <div className="flex gap-1">
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (

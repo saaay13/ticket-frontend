@@ -55,9 +55,9 @@ export function CreateUserForm({ departments, onSuccess, onCancel }: CreateUserF
             {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
           <select className="p-2 border rounded-xl bg-white/60 focus:bg-white outline-primary font-medium" value={createFormData.role} onChange={e => setCreateFormData({...createFormData, role: e.target.value})}>
-            <option value="Staff">Staff (Regular)</option>
-            <option value="Agent">Agent (Soporte)</option>
-            <option value="Admin">Admin</option>
+            <option value="Staff">Personal (Regular)</option>
+            <option value="Agent">Agente (Soporte)</option>
+            <option value="Admin">Administrador</option>
           </select>
           
           <div className="lg:col-span-3 flex justify-end gap-3 mt-4">

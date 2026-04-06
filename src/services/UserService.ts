@@ -1,18 +1,7 @@
 import { apiService } from './ApiService';
+import { User } from '@/types';
 
-export interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  department_id?: number;
-  role?: string;
-  active: boolean;
-  department?: {
-    id: number;
-    name: string;
-  };
-}
+export type { User };
 
 export interface CreateUserData {
   first_name: string;

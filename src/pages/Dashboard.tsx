@@ -8,14 +8,16 @@ import { Badge, Button, Skeleton } from "@/components/atoms";
 import { DashboardStats, DashboardCharts, RecentTicketsList, TeamPerformanceMetrics } from "@/components/organisms";
 import { useTickets } from "@/hooks/useTickets";
 import { ticketService } from "@/services/TicketService";
+import { getStatusLabel, getPriorityLabel } from "@/data/ticketData";
 
 const categoryColors: Record<string, string> = {
   "Hardware": "var(--primary)",
   "Software": "var(--info)",
-  "Network": "var(--warning)",
-  "Security": "var(--error)",
-  "Access Request": "var(--primary-600)",
-  "Other": "var(--neutral-400)"
+  "Redes": "var(--warning)",
+  "Seguridad": "var(--error)",
+  "Gestión de Accesos": "var(--primary-600)",
+  "Correo Electrónico": "var(--indigo-500)",
+  "Otros": "var(--neutral-400)"
 };
 
 export function Dashboard() {
@@ -52,10 +54,10 @@ export function Dashboard() {
   const isUnassigned = !user?.department_id;
 
   const stats = [
-    { label: "Total Tickets", value: metrics?.stats?.total || 0, icon: TicketIcon, variant: "primary", trend: "Global" },
-    { label: "Pendientes", value: metrics?.stats?.open || 0, icon: AlertTriangle, variant: "warning", trend: "Activos" },
-    { label: "En Proceso", value: metrics?.stats?.in_progress || 0, icon: Clock, variant: "info", trend: "En curso" },
-    { label: "Resueltos", value: metrics?.stats?.resolved || 0, icon: CheckCircle, variant: "success", trend: "Finalizados" },
+    { label: "Total de Tickets", value: metrics?.stats?.total || 0, icon: TicketIcon, variant: "primary", trend: "Global" },
+    { label: "Pendientes", value: metrics?.stats?.open || 0, icon: AlertTriangle, variant: "warning", trend: "Abiertos" },
+    { label: "En Proceso", value: metrics?.stats?.in_progress || 0, icon: Clock, variant: "info", trend: "Activos" },
+    { label: "Resueltos", value: metrics?.stats?.resolved || 0, icon: CheckCircle, variant: "success", trend: "Completados" },
   ];
 
   const categoryData = (metrics?.categories || []).map((c: any) => ({
@@ -211,7 +213,7 @@ export function Dashboard() {
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-1">Actividad Personal</p>
-                  <h3 className="text-2xl font-black text-neutral-800 tracking-tight">{tickets.filter(t => t.requester_id === user?.id).length} Reportados</h3>
+                  <h3 className="text-2xl font-black text-neutral-800 tracking-tight">{tickets.filter(t => Number(t.requester_id) === Number(user?.id)).length} Reportados</h3>
                   <p className="text-xs font-bold text-neutral-400 mt-0.5">Tickets que tú has enviado.</p>
                 </div>
                 <ArrowRight size={20} className="ml-auto text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
@@ -225,7 +227,7 @@ export function Dashboard() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">Gestión Técnica</p>
-                    <h3 className="text-2xl font-black text-neutral-800 tracking-tight">{tickets.filter(t => t.assigned_to_id === user?.id).length} Solicitudes</h3>
+                    <h3 className="text-2xl font-black text-neutral-800 tracking-tight">{tickets.filter(t => Number(t.assigned_to_id) === Number(user?.id)).length} Solicitudes</h3>
                     <p className="text-xs font-bold text-neutral-400 mt-0.5">Tickets asignados para resolver.</p>
                   </div>
                   <ArrowRight size={20} className="ml-auto text-indigo-600 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />

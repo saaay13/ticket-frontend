@@ -1,21 +1,21 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { 
-  LayoutDashboard, 
-  Ticket, 
-  Users, 
-  Settings, 
-  Plus, 
-  User as UserIcon, 
-  Shield, 
-  X, 
-  LogOut 
+import {
+  LayoutDashboard,
+  Ticket,
+  Users,
+  Settings,
+  Plus,
+  User as UserIcon,
+  Shield,
+  X,
+  LogOut
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/Utils";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "Panel Principal", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Tickets Globales", icon: Ticket, href: "/dashboard/tickets" },
   { label: "Equipo IT", icon: Shield, href: "/dashboard/team" },
   { label: "Control de Personal", icon: Users, href: "/dashboard/staff" },
@@ -37,12 +37,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     return location.pathname.startsWith(href);
   };
 
-  const userInitials = user 
-    ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase() 
+  const userInitials = user
+    ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
     : "??";
-  
-  const fullName = user 
-    ? `${user.first_name} ${user.last_name}` 
+
+  const fullName = user
+    ? `${user.first_name} ${user.last_name}`
     : "Usuario";
 
   const isAdmin = user?.role === "Admin";
@@ -52,7 +52,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const filteredNavItems = NAV_ITEMS.filter(item => {
     if (isUnassigned) {
-      return item.label === "Dashboard" || item.label === "Configuración";
+      return item.label === "Panel Principal" || item.label === "Configuración";
     }
     if (isStaff) {
       return !["Equipo IT", "Control de Personal"].includes(item.label);
@@ -78,8 +78,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <Shield size={22} className="text-white" />
           </div>
           <div>
-            <div className="text-white font-bold text-sm tracking-tight">IT Support</div>
-            <div className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Ticket System</div>
+            <div className="text-white font-bold text-sm tracking-tight">Soporte IT</div>
+            <div className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Sistema de Tickets</div>
           </div>
         </div>
         <button className="lg:hidden text-white/70 hover:text-white transition-colors" onClick={onClose}>
@@ -102,8 +102,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               }}
               className={cn(
                 "group relative overflow-hidden flex items-center gap-3 px-4 py-3.5 my-1 rounded-2xl transition-all duration-300 outline-none",
-                isActiveItem 
-                  ? "bg-white/15 text-white shadow-lg shadow-black/5" 
+                isActiveItem
+                  ? "bg-white/15 text-white shadow-lg shadow-black/5"
                   : "text-white/70 hover:bg-white/5 hover:text-white"
               )}
             >

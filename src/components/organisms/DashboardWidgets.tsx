@@ -9,6 +9,7 @@ import {
 import { Badge, Progress, Button } from "@/components/atoms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/molecules";
 import { cn } from "@/lib/Utils";
+import { getStatusLabel, getPriorityLabel, getCategoryLabel } from "@/data/ticketData";
 
 // Estadísticas
 export interface StatItem {
@@ -53,6 +54,16 @@ export function DashboardStats({ stats }: { stats: StatItem[] }) {
 
 // Gráficos
 export function DashboardCharts({ weeklyData, categoryData, total }: { weeklyData: any[]; categoryData: any[]; total: number }) {
+  const dayTranslation: Record<string, string> = {
+    'Mon': 'Lun', 'Tue': 'Mar', 'Wed': 'Mié', 'Thu': 'Jue', 'Fri': 'Vie', 'Sat': 'Sáb', 'Sun': 'Dom',
+    'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles', 'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'Sábado', 'Sunday': 'Domingo'
+  };
+
+  const translatedWeeklyData = weeklyData.map(d => ({
+    ...d,
+    day: dayTranslation[d.day] || d.day
+  }));
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <Card className="lg:col-span-2 border-none shadow-premium bg-white overflow-hidden animate-in slide-in-from-left-4 duration-700">
@@ -66,7 +77,7 @@ export function DashboardCharts({ weeklyData, categoryData, total }: { weeklyDat
         </CardHeader>
         <CardContent className="p-8">
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={weeklyData} barGap={8}>
+            <BarChart data={translatedWeeklyData} barGap={8}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--neutral-100)" vertical={false} />
               <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: "900", fill: "var(--neutral-400)" }} dy={10} />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: "900", fill: "var(--neutral-400)" }} />
@@ -108,7 +119,7 @@ export function DashboardCharts({ weeklyData, categoryData, total }: { weeklyDat
               <div key={c.name} className="flex items-center justify-between group">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 rounded-full shadow-inner" style={{ backgroundColor: c.color }} />
-                  <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest truncate max-w-[120px]">{c.name}</span>
+                  <span className="text-[10px] font-black text-neutral-600 uppercase tracking-widest truncate max-w-[120px]">{getCategoryLabel(c.name)}</span>
                 </div>
                 <span className="text-xs font-black text-neutral-900">{c.value}</span>
               </div>
@@ -151,7 +162,7 @@ export function RecentTicketsList({ tickets, isStaff, isAdminOrAgent }: { ticket
               <div className="flex items-center gap-3 text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
                 <span className="flex items-center gap-1"><UserIcon size={10} /> {ticket.requester}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-neutral-200" />
-                <span className="flex items-center gap-1"><Zap size={10} /> {ticket.category}</span>
+                <span className="flex items-center gap-1"><Zap size={10} /> {getCategoryLabel(ticket.category)}</span>
               </div>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
@@ -159,13 +170,13 @@ export function RecentTicketsList({ tickets, isStaff, isAdminOrAgent }: { ticket
                 variant={ticket.priority === 'Critical' ? 'destructive' : ticket.priority === 'High' ? 'warning' : 'secondary'}
                 className="text-[9px] font-black uppercase shadow-none"
               >
-                {ticket.priority}
+                {getPriorityLabel(ticket.priority)}
               </Badge>
               <Badge
                 variant={ticket.status === 'Resolved' ? 'success' : ticket.status === 'In Progress' ? 'info' : 'secondary'}
                 className="text-[9px] font-black uppercase shadow-none"
               >
-                {ticket.status}
+                {getStatusLabel(ticket.status)}
               </Badge>
             </div>
           </Link>

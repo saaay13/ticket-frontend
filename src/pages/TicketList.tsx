@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { Plus, ListFilter, Search, Ticket as TicketIcon, Trash2 } from "lucide-react";
 import { useTickets } from "@/hooks/useTickets";
 import {
@@ -28,9 +28,9 @@ import { Button, Badge, Skeleton } from "@/components/atoms";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/Utils";
 
-const STATUSES: TicketStatus[] = ["Open", "In Progress", "Pending", "Resolved", "Closed"];
-const PRIORITIES: TicketPriority[] = ["Critical", "High", "Medium", "Low"];
-const CATEGORIES: TicketCategory[] = ["Hardware", "Software", "Network", "Security", "Access Request", "Email", "Other"];
+const STATUSES: TicketStatus[] = ["Abierto", "En Progreso", "Pendiente", "Resuelto", "Cerrado"];
+const PRIORITIES: TicketPriority[] = ["Crítica", "Alta", "Media", "Baja"];
+const CATEGORIES: TicketCategory[] = ["Hardware", "Software", "Redes", "Seguridad", "Gestión de Accesos", "Correo Electrónico", "Otros"];
 
 export function TicketList({ myTickets = false }: { myTickets?: boolean }) {
   const { user } = useAuth();
@@ -38,9 +38,17 @@ export function TicketList({ myTickets = false }: { myTickets?: boolean }) {
   const isAdmin = user?.role === 'Admin';
 
   // Navegación y Ordenamiento
+  const [searchParams] = useSearchParams();
   const [viewMode, setViewMode] = useState<"all" | "created" | "assigned">(myTickets ? "created" : "all");
   const [sortKey, setSortKey] = useState<keyof Ticket>("createdAt");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+
+  useEffect(() => {
+    const view = searchParams.get("view");
+    if (view === "assigned_to_me") setViewMode("assigned");
+    if (view === "created_by_me") setViewMode("created");
+  }, [searchParams]);
+
 
   const backendSortMap: Partial<Record<keyof Ticket, string>> = {
     createdAt: "created_at",

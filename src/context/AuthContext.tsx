@@ -12,6 +12,7 @@ export type AuthContextValue = {
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
+  updateUserLocal: (newUser: ApiUser) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -54,6 +55,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await authService.forgotPassword(email);
   };
 
+  const updateUserLocal = (newUser: ApiUser) => {
+    setUser(newUser);
+  };
+
   const value = useMemo(
     () => ({
       isAuthenticated,
@@ -63,6 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       register,
       logout,
       forgotPassword,
+      updateUserLocal,
     }),
     [isAuthenticated, loading, user]
   );

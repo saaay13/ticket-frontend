@@ -103,7 +103,7 @@ export function Login() {
               <Ticket className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-white font-bold text-xl tracking-tight">IT Support</p>
+              <p className="text-white font-bold text-xl tracking-tight">Soporte IT</p>
               <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Plataforma Institucional</p>
             </div>
           </div>
@@ -137,7 +137,7 @@ export function Login() {
             <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
               <Ticket className="w-6 h-6 text-white" />
             </div>
-            <p className="font-bold text-xl text-neutral-900 tracking-tight">IT Support</p>
+            <p className="font-bold text-xl text-neutral-900 tracking-tight">Soporte IT</p>
           </div>
 
           {/* LOGIN VIEW */}

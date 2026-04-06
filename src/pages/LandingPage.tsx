@@ -30,19 +30,19 @@ export function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
               <Shield size={22} className="text-white" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-neutral-900 font-black text-lg leading-none tracking-tight">IT Support</span>
-              <span className="text-neutral-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Ticket System</span>
+            <div className="flex flex-col text-left">
+              <span className="text-neutral-900 font-black text-lg leading-none tracking-tight">Soporte IT</span>
+              <span className="text-neutral-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Sistema de Tickets</span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <Link to="/login">
-              <Button variant="ghost" className="font-black text-xs uppercase tracking-widest">Login</Button>
+              <Button variant="ghost" className="font-black text-xs uppercase tracking-widest">Iniciar Sesión</Button>
             </Link>
             <Link to="/register">
               <Button className="rounded-xl px-6 py-5 font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/10 transition-all hover:scale-105 active:scale-95">
-                Sing up
+                Registrarse
               </Button>
             </Link>
           </div>
@@ -139,9 +139,9 @@ export function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center relative z-10">
             {[
               { val: "99.9%", label: "Uptime" },
-              { val: "< 5min", label: "Response" },
-              { val: "10k+", label: "Solved" },
-              { val: "4.9/5", label: "Satisfaction" }
+              { val: "< 5min", label: "Respuesta" },
+              { val: "10k+", label: "Resueltos" },
+              { val: "4.9/5", label: "Satisfacción" }
             ].map((stat, i) => (
               <div key={i} className="space-y-2">
                 <p className="text-5xl font-black text-white tracking-tighter">{stat.val}</p>
@@ -160,7 +160,7 @@ export function LandingPage() {
               <Shield size={22} className="text-primary" />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-neutral-900 font-black text-lg leading-none tracking-tight">IT Support</span>
+              <span className="text-neutral-900 font-black text-lg leading-none tracking-tight">Soporte IT</span>
               <span className="text-neutral-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">© 2026 Todos los derechos reservados</span>
             </div>
           </div>

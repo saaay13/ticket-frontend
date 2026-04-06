@@ -2,15 +2,15 @@
 
 Este es el Frontend reactivo y de diseño moderno del **Sistema de Tickets**. Está construido implementando la metodología de diseño atómico para garantizar una capa de interfaz de usuario limpia, mantenible y altamente modular.
 
-## 🚀 Tecnologías Usadas
+## 🚀 Tecnologias Usadas
 
 *   **Motor Principal**: React.js 18
 *   **Lenguaje**: TypeScript (Tipado fuerte y seguro)
-*   **Empaquetador**: Vite (Arranque instant\u00e1neo en desarrollo)
+*   **Empaquetador**: Vite (Arranque instantaneo en desarrollo)
 *   **Framework CSS**: TailwindCSS (Estilos utilitarios rápidos y responsivos)
 *   **Enrutamiento**: React Router Dom v6
 *   **Componentes Visuales**: Shadcn/UI y Radix UI Primitives (Accesibles e integrables)
-*   **Iconograf\u00eda**: Lucide-React
+*   **Iconografia**: Lucide-React
 *   **Peticiones HTTP**: Axios (Con interceptores para manejar cabeceras y errores SPA)
 
 ## 🏗\ufe0f Arquitectura: Dise\u00f1o At\u00f3mico
