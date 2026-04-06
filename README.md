@@ -20,28 +20,35 @@ Hemos estructurado los componentes web bajo *Atomic Design*:
 3.  **`organisms/`**: Bloques completos (Sidebar, Cabecera superior, Formularios, Tablas complejas).
 4.  **`pages/`**: Vistas ruteables (Dashboard, Lista de Tickets, Panel de Equipo).
 
-## ⚙\ufe0f Gu\u00eda de Instalaci\u00f3n y Arranque
+## ⚙\ufe0f Gu\u00eda de Instalacion y Arranque
 
-### 1. Requisitos Previos
+### 1. Descarga del Proyecto (Git Clone)
+Abre tu terminal y clona el repositorio de frontend:
+```bash
+git clone https://github.com/saaay13/ticket-frontend.git
+cd ticket-frontend
+```
+
+### 2. Requisitos Previos
 *   Tener instalado Node.js.
-*   Aseg\u00farate que el servidor Backend de Laravel est\u00e9 encendido (generalmente en `http://localhost:8000`).
+*   Asegurate que el servidor Backend de Laravel este encendido (generalmente en `http://localhost:8000`).
 
-### 2. Configurar el Entorno
+### 3. Configurar el Entorno
 1. Duplica `.env.example` (si existe) a `.env`.
-   Deber\u00edas tener apuntada tu variable local al backend:
+   Deberas tener apuntada tu variable local al backend:
    ```ini
    VITE_API_URL=http://localhost:8000/api
    ```
-   *Nota: Por pol\u00edticas de SPA Authentication, la URL del backend no debe llevar barras finales extras.*
+   *Nota: Por politicas de SPA Authentication, la URL del backend no debe llevar barras finales extras.*
 
-### 3. Instalar Dependencias
+### 4. Instalar Dependencias
 Al clonar la aplicaci\u00f3n, necesitas instalar todas las dependencias de Node definidas:
 ```bash
 npm install
 # Opcionalmente: pnpm install o yarn install
 ```
 
-### 4. Encender Servidor de Desarrollo
+### 5. Encender Servidor de Desarrollo
 ```bash
 npm run dev
 ```
