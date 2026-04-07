@@ -14,6 +14,8 @@ export interface TeamMemberCardProps {
   departments: Department[];
   getDeptName: (deptId?: number) => string;
   onUpdateUser: (userId: number, updates: Partial<User>) => Promise<void>;
+  onDeleteUser: (userId: number) => Promise<void>;
+  onRestoreUser: (userId: number) => Promise<void>;
   updatingId: number | null;
 }
 
@@ -25,6 +27,8 @@ export function TeamMemberCard({
   departments,
   getDeptName,
   onUpdateUser,
+  onDeleteUser,
+  onRestoreUser,
   updatingId
 }: TeamMemberCardProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -46,6 +50,7 @@ export function TeamMemberCard({
 
   const isOnline = member.active;
   const isIT = member.department_id === 1 && (member.role === 'Admin' || member.role === 'Agent');
+  console.log(stats)
 
   return (
     <Card className="border-none shadow-premium hover:shadow-xl transition-all group overflow-hidden bg-white">
@@ -85,8 +90,8 @@ export function TeamMemberCard({
               )}
               
               {!isEditing && (
-                <Badge variant={isOnline ? "success" : "secondary"} className="text-[9px] font-black uppercase tracking-widest px-2 py-0">
-                  {isOnline ? "Activo" : "Inactivo"}
+                <Badge variant={isOnline ? "success" : "destructive"} className="text-[9px] font-black uppercase tracking-widest px-2 py-0">
+                  {isOnline ? "Activo" : "Eliminado"}
                 </Badge>
               )}
             </div>
@@ -198,9 +203,36 @@ export function TeamMemberCard({
                     </Button>
                   </>
                 ) : (
-                  <Button variant="outline" className="text-[10px] uppercase font-black tracking-widest py-1.5" onClick={startEditing} disabled={updatingId === member.id}>
-                    Editar Datos Personales
-                  </Button>
+                  <div className="flex gap-2">
+                    {member.active ? (
+                      <>
+                        <Button variant="outline" className="text-[10px] uppercase font-black tracking-widest py-1.5" onClick={startEditing} disabled={updatingId === member.id}>
+                          Editar
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="text-[10px] uppercase font-black tracking-widest py-1.5 border-error/20 text-error hover:bg-error/5" 
+                          onClick={() => {
+                            if (window.confirm(`¿Estás seguro de que deseas eliminar a ${member.first_name}?`)) {
+                              onDeleteUser(member.id);
+                            }
+                          }} 
+                          disabled={updatingId === member.id}
+                        >
+                          Eliminar
+                        </Button>
+                      </>
+                    ) : (
+                      <Button 
+                        variant="primary" 
+                        className="text-[10px] uppercase font-black tracking-widest py-1.5" 
+                        onClick={() => onRestoreUser(member.id)}
+                        disabled={updatingId === member.id}
+                      >
+                        Reactivar Usuario
+                      </Button>
+                    )}
+                  </div>
                 )}
              </div>
           )}

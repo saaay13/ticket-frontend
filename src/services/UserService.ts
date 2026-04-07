@@ -44,6 +44,19 @@ class UserService {
       return null;
     }
   }
+
+  async delete(id: number): Promise<void> {
+    return apiService.delete<void>(`/users/${id}`);
+  }
+
+  async getTrash(): Promise<User[]> {
+    const response = await apiService.get<any>('/users/trash');
+    return Array.isArray(response) ? response : (response.data || []);
+  }
+
+  async restore(id: number): Promise<void> {
+    return apiService.post<void>(`/users/${id}/restore`, {});
+  }
 }
 
 export const userService = new UserService();

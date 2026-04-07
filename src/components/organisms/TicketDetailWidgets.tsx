@@ -20,14 +20,16 @@ const STATUS_OPTIONS = ["Abierto", "En Progreso", "Pendiente", "Resuelto", "Cerr
 
 // --- 1. TICKET HEADER ---
 export function TicketHeader({
-  ticket, currentStatus, isIT, isAdmin, updating, editing, onStatusChange, onToggleEdit, onBack
+  ticket, currentStatus, isIT, isAdmin, updating, editing, onStatusChange, onToggleEdit, onBack, onUpdateField
 }: any) {
   const [statusDropdown, setStatusDropdown] = useState(false);
   const sc = getStatusColor(currentStatus as any);
 
+  const categories = ["Hardware", "Software", "Redes", "Seguridad", "Gestión de Accesos", "Correo Electrónico", "Otros"];
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-100 pb-6">
-      <div className="space-y-1">
+      <div className="space-y-1 flex-1">
         <div className="flex items-center gap-2 mb-2">
           <button
             onClick={onBack}
@@ -38,9 +40,30 @@ export function TicketHeader({
           <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md">
             #{ticket.id}
           </span>
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{getCategoryLabel(ticket.category)}</span>
+          {editing ? (
+            <select
+              className="text-xs font-bold text-muted-foreground uppercase tracking-wider bg-transparent border-none outline-none focus:ring-0 cursor-pointer hover:text-primary transition-colors"
+              value={ticket.category}
+              onChange={(e) => onUpdateField({ category: e.target.value as any })}
+            >
+              {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+            </select>
+          ) : (
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{getCategoryLabel(ticket.category)}</span>
+          )}
         </div>
-        <h1 className="text-3xl font-black text-neutral-900 tracking-tight">{ticket.title}</h1>
+        {editing ? (
+          <input
+            type="text"
+            className="w-full text-3xl font-black text-neutral-900 tracking-tight bg-transparent border-none outline-none focus:ring-0 p-0"
+            value={ticket.title}
+            onChange={(e) => onUpdateField({ title: e.target.value })}
+            placeholder="Título del Ticket"
+            autoFocus
+          />
+        ) : (
+          <h1 className="text-3xl font-black text-neutral-900 tracking-tight">{ticket.title}</h1>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
@@ -73,7 +96,7 @@ export function TicketHeader({
                     className="w-full text-left px-4 py-2.5 text-xs font-bold hover:bg-neutral-50 transition-colors flex items-center justify-between group"
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: scOption.bg !== 'var(--neutral-100)' ? scOption.bg : scOption.text }} />
+                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: scOption.bg !== 'var(--neutral-100)' ? scOption.bg : scOption.text }} />
                       <span className="text-neutral-700">{getStatusLabel(status)}</span>
                     </div>
                     {currentStatus === status && <CheckCircle size={14} className="text-primary" />}
@@ -219,11 +242,13 @@ export function TicketMetadataSidebar({
   onEscalate,
   onDelete
 }: any) {
+  const priorities = ["Crítica", "Alta", "Media", "Baja"];
+  
   const details = [
     { icon: User, label: "Solicitante", value: ticket.requester, color: "text-blue-500", key: 'req' },
     { icon: User, label: "Asignado a", value: ticket.assignee, color: "text-orange-500", isAssignee: true, key: 'assign' },
-    { icon: Building, label: "Departamento", value: ticket.department, color: "text-purple-500", key: 'dept' },
-    { icon: Tag, label: "Prioridad", value: getPriorityLabel(ticket.priority), color: "text-error", isBadge: true, badgeVariant: ticket.priority === 'Crítica' ? 'destructive' : ticket.priority === 'Alta' ? 'warning' : ticket.priority === 'Baja' ? 'success' : 'secondary', key: 'prior' },
+    { icon: Building, label: "Departamento", value: ticket.department, color: "text-purple-500", key: 'dept', isDept: true },
+    { icon: Tag, label: "Prioridad", value: getPriorityLabel(ticket.priority), color: "text-error", isBadge: true, isPriority: true, badgeVariant: ticket.priority === 'Crítica' ? 'destructive' : ticket.priority === 'Alta' ? 'warning' : ticket.priority === 'Baja' ? 'success' : 'secondary', key: 'prior' },
     { icon: Calendar, label: "Creado el", value: new Date(ticket.createdAt).toLocaleDateString() + " " + new Date(ticket.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), color: "text-neutral-500", key: 'cal' },
   ];
 
@@ -255,6 +280,23 @@ export function TicketMetadataSidebar({
                       <option key={s.id} value={s.id}>{s.first_name} {s.last_name}</option>
                     ))}
                   </select>
+                ) : item.isPriority && editing && isIT ? (
+                  <select
+                    className="w-full mt-1 text-sm font-bold bg-white border border-neutral-200 rounded-lg py-1.5 px-3 uppercase text-neutral-700 outline-none focus:border-primary disabled:opacity-50"
+                    value={ticket.priority}
+                    disabled={updating}
+                    onChange={(e) => onUpdateField({ priority: e.target.value as any })}
+                  >
+                    {priorities.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                ) : item.isDept && editing && isIT ? (
+                  <input
+                    className="w-full mt-1 text-sm font-bold bg-white border border-neutral-200 rounded-lg py-1.5 px-3 uppercase text-neutral-700 outline-none focus:border-primary disabled:opacity-50"
+                    value={ticket.department || ""}
+                    placeholder="Departamento..."
+                    disabled={updating}
+                    onChange={(e) => onUpdateField({ department: e.target.value })}
+                  />
                 ) : item.isBadge ? (
                   <Badge variant={item.badgeVariant as any} className="font-black text-[10px] rounded-md px-2 py-0">
                     {item.value}
@@ -300,10 +342,20 @@ export function TicketMetadataSidebar({
             >
               <CheckCircle size={14} className="mr-2" /> Finalizar / Cerrar Ticket
             </Button>
-
+            {isAdmin && (
+               <Button
+               variant="outline"
+               className="w-full justify-start font-bold py-5 text-xs border-error/20 text-error hover:bg-error/5"
+               onClick={onDelete}
+               disabled={updating || ticket.status === 'Eliminado'}
+             >
+               <Trash2 size={14} className="mr-2" /> Eliminar Definitivamente
+             </Button>
+            )}
           </div>
         </div>
       )}
     </div>
   );
 }
+

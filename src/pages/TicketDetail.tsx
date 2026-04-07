@@ -127,6 +127,7 @@ export function TicketDetail() {
         onStatusChange={handleStatusChange}
         onToggleEdit={() => setEditing(!editing)}
         onBack={() => navigate(-1)}
+        onUpdateField={updateTicketField}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -137,7 +138,17 @@ export function TicketDetail() {
             </CardHeader>
             <CardContent className="p-8">
               <div className="prose prose-sm max-w-none text-neutral-700 leading-relaxed font-medium">
-                {ticket.description}
+                {editing ? (
+                  <textarea
+                    className="w-full min-h-[200px] p-4 rounded-2xl border border-neutral-200 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none resize-none bg-neutral-50/50"
+                    value={ticket.description}
+                    onChange={(e) => updateTicketField({ description: e.target.value })}
+                    placeholder="Escribe la descripción detallada aquí..."
+                    disabled={updating}
+                  />
+                ) : (
+                  ticket.description || "Sin descripción proporcionada."
+                )}
               </div>
 
               {ticket.tags && ticket.tags.length > 0 && (

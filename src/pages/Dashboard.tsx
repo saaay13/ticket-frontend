@@ -66,7 +66,7 @@ export function Dashboard() {
     color: categoryColors[c.name] || "var(--neutral-400)"
   })).sort((a: any, b: any) => b.value - a.value);
 
-  const agents = metrics?.team || [];
+  const agents = (metrics?.team || []).slice(0, 3); // Solo mostramos el Top 3 en el Panel Principal
   const weeklyData = metrics?.weekly || [];
 
   if (loading || ticketsLoading) {

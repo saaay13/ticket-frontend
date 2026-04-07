@@ -171,6 +171,20 @@ function mapApiCategory(category: string): TicketCategory {
   return categoryMap[category] || 'Otros';
 }
 
+function mapFrontendCategoryToApiId(category: TicketCategory): number {
+  const categoryMap: Record<TicketCategory, number> = {
+    'Hardware': 1,
+    'Software': 2,
+    'Redes': 3,
+    'Seguridad': 4,
+    'Gestión de Accesos': 5,
+    'Correo Electrónico': 6,
+    'Otros': 7,
+  };
+  return categoryMap[category] || 7;
+}
+
+
 // API functions
 export async function getTickets(params?: Record<string, any>): Promise<Ticket[]> {
   const apiTickets = await ticketService.getAll(params);
@@ -207,12 +221,12 @@ export async function createTicket(data: {
       title: data.title,
       details: {
         description: data.description,
-        priority: data.priority.toLowerCase(),
+        priority: mapFrontendPriorityToApi(data.priority),
         department: data.department,
         tags: [],
         custom_fields: {},
       },
-      category_id: 1, // TODO: Map category name to ID
+      category_id: mapFrontendCategoryToApiId(data.category),
       requester_id: data.requester_id,
     };
 
@@ -224,13 +238,14 @@ export async function createTicket(data: {
   }
 }
 
-export async function updateTicket(id: string, data: Partial<Ticket>): Promise<Ticket> {
+export async function updateTicket(id: string, data: Partial<Ticket> & { category?: TicketCategory }): Promise<Ticket> {
   try {
     const apiData: any = {};
 
     if (data.title) apiData.title = data.title;
     if (data.status) apiData.status = mapFrontendStatusToApi(data.status);
     if ('assigned_to_id' in data) apiData.assigned_to_id = data.assigned_to_id;
+    if (data.category) apiData.category_id = mapFrontendCategoryToApiId(data.category);
 
     // Manage dynamic details map
     if (data.description !== undefined || data.priority !== undefined || data.department !== undefined || data.tags !== undefined) {
