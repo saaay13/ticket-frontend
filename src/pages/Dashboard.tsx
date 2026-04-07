@@ -213,7 +213,7 @@ export function Dashboard() {
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-1">Actividad Personal</p>
-                  <h3 className="text-2xl font-black text-neutral-800 tracking-tight">{tickets.filter(t => Number(t.requester_id) === Number(user?.id)).length} Reportados</h3>
+                  <h3 className="text-2xl font-black text-neutral-800 tracking-tight"> Reportados</h3>
                   <p className="text-xs font-bold text-neutral-400 mt-0.5">Tickets que tú has enviado.</p>
                 </div>
                 <ArrowRight size={20} className="ml-auto text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
@@ -227,7 +227,7 @@ export function Dashboard() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">Gestión Técnica</p>
-                    <h3 className="text-2xl font-black text-neutral-800 tracking-tight">{tickets.filter(t => Number(t.assigned_to_id) === Number(user?.id)).length} Solicitudes</h3>
+                    <h3 className="text-2xl font-black text-neutral-800 tracking-tight"> Solicitudes</h3>
                     <p className="text-xs font-bold text-neutral-400 mt-0.5">Tickets asignados para resolver.</p>
                   </div>
                   <ArrowRight size={20} className="ml-auto text-indigo-600 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
